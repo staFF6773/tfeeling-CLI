@@ -4,36 +4,39 @@
 # Script: sylvie.sh
 # Descripción: Simulador interactivo basado en "Teaching Feeling".
 #              Gestiona el sistema de afecto, confianza, tiempo y diálogos.
-# Autor: Antigravity Assistant
-# Versión: 2.0.0
 # ==============================================================================
 
 # --- Definición de Rutas y Estilos ---
-DATA_FILE="$HOME/.sylvie_data"    # Archivo de persistencia de datos del usuario
+DATA_FILE="$HOME/.sylvie_save.json" # Cambiado a JSON
+ENGINE_PY="$(dirname "$0")/modules/engine.py"
 COLOR_RESET="\e[0m"              # Reset de formato ANSI
 COLOR_PINK="\e[1;35m"             # Color para temática de Sylvie
 COLOR_CYAN="\e[1;36m"             # Color para información del sistema
 COLOR_WHITE="\e[1;37m"            # Color para texto general
 COLOR_GRAY="\e[0;90m"             # Color para separadores y decoraciones
 
-# --- Inicialización del Sistema de Persistencia ---
-# Verifica la existencia del archivo de datos y crea uno nuevo con valores 
-# predeterminados por primera vez.
-if [ ! -f "$DATA_FILE" ]; then
-    cat <<EOF > "$DATA_FILE"
-affection=0
-trust=0
-name=Sylvie
-last_action=none
-time_of_day=morning
-hour=8
-minute=0
-actions_taken=0
-EOF
-fi
+# --- Integración con el Motor Python ---
 
-# Cargar datos
-source "$DATA_FILE"
+# @function call_engine
+# @description Llama al motor Python y actualiza las variables de Bash desde el JSON resultante.
+call_engine() {
+    local action=$1
+    local json_output
+    json_output=$(python3 "$ENGINE_PY" --action "$action")
+    
+    # Extraer variables del JSON usando jq
+    affection=$(echo "$json_output" | jq -r '.affection')
+    trust=$(echo "$json_output" | jq -r '.trust')
+    name=$(echo "$json_output" | jq -r '.name')
+    last_action=$(echo "$json_output" | jq -r '.last_action')
+    time_of_day=$(echo "$json_output" | jq -r '.time_of_day')
+    hour=$(echo "$json_output" | jq -r '.hour')
+    minute=$(echo "$json_output" | jq -r '.minute')
+    actions_taken=$(echo "$json_output" | jq -r '.actions_taken')
+}
+
+# Inicialización: Cargar estado inicial
+call_engine "status"
 
 # Cargar diálogos (si existe el archivo)
 DIALOGUES_FILE="$(dirname "$0")/modules/dialogues.sh"
@@ -48,18 +51,9 @@ fi
 
 # --- Persistencia de Datos ---
 # @function save_data
-# @description Guarda el estado actual de todas las variables globales en el archivo de datos.
+# @description (Obsoleto) Ahora el motor Python se encarga de la persistencia.
 save_data() {
-    cat <<EOF > "$DATA_FILE"
-affection=$affection
-trust=$trust
-name=$name
-last_action=$last_action
-time_of_day=$time_of_day
-hour=$hour
-minute=$minute
-actions_taken=$actions_taken
-EOF
+    :
 }
 
 # --- Arte ASCII y UI ---
@@ -169,11 +163,8 @@ get_dialogue() {
 # @description Acción de acariciar. Incrementa afecto y confianza. 
 #              Avanza el contador de acciones.
 pat_head() {
-    affection=$((affection + 2))
-    trust=$((trust + 1))
-    last_action="pat_head"
-    actions_taken=$((actions_taken + 1))
-    save_data
+    echo -e "${COLOR_PINK}Acaricias suavemente la cabeza de Sylvie.${COLOR_RESET}"
+    call_engine "pat_head"
     draw_sylvie
     echo -e "${COLOR_PINK}Acaricias suavemente la cabeza de Sylvie.${COLOR_RESET}"
     echo -e "${COLOR_WHITE}Sylvie: ${COLOR_RESET}$(get_dialogue $affection "none" $last_action $time_of_day)"
@@ -184,11 +175,8 @@ pat_head() {
 # @description Acción de regalar un dulce. Gran incremento de afecto y confianza.
 #              Avanza el contador de acciones.
 give_treat() {
-    affection=$((affection + 5))
-    trust=$((trust + 2))
-    last_action="give_treat"
-    actions_taken=$((actions_taken + 1))
-    save_data
+    echo -e "${COLOR_CYAN}Le das un dulce a Sylvie.${COLOR_RESET}"
+    call_engine "give_treat"
     draw_sylvie
     echo -e "${COLOR_CYAN}Le das un dulce a Sylvie.${COLOR_RESET}"
     echo -e "${COLOR_WHITE}Sylvie: ${COLOR_RESET}$(get_dialogue $affection "treat" $last_action $time_of_day)"
@@ -199,50 +187,28 @@ give_treat() {
 # @description Acción de conversación. Diálogos variados según estadísticas.
 #              Avanza el contador de acciones.
 talk() {
+    call_engine "talk"
     draw_sylvie
     echo -e "${COLOR_CYAN}Hablas con Sylvie.${COLOR_RESET}"
     echo -e "${COLOR_WHITE}Sylvie: ${COLOR_RESET}$(get_dialogue $affection "none" $last_action $time_of_day)"
     sleep 2
-    actions_taken=$((actions_taken + 1))
-    save_data
 }
 
 # --- Motor de Tiempo ---
 
 # @function update_time_of_day
 # @description Sincroniza la etiqueta descriptiva del día según la hora actual (0-23).
-update_time_of_day() {
-    if [ "$hour" -ge 6 ] && [ "$hour" -lt 12 ]; then
-        time_of_day="morning"
-    elif [ "$hour" -ge 12 ] && [ "$hour" -lt 18 ]; then
-        time_of_day="afternoon"
-    else
-        time_of_day="night"
-    fi
-}
+# (Esta función ahora es manejada por el motor Python)
 
 # @function advance_time
 # @description Avanza el reloj interno 30 minutos y gestiona el ciclo de 24h.
 #              Resetea el contador de acciones tras el avance.
-advance_time() {
-    minute=$((minute + 30))
-    if [ "$minute" -ge 60 ]; then
-        minute=0
-        hour=$((hour + 1))
-    fi
-    
-    if [ "$hour" -ge 24 ]; then
-        hour=0
-    fi
-    
-    update_time_of_day
-    actions_taken=0
-    save_data
-}
+# (Esta función ahora es manejada por el motor Python)
 
 # --- Menú Principal ---
 while true; do
-    update_time_of_day
+    # Sincronizar estado antes de mostrar el menú
+    call_engine "status"
     draw_sylvie
     show_status
     echo "1) Acariciar cabeza"
@@ -261,11 +227,4 @@ while true; do
             ;;
         *) echo "Opción no válida." ; sleep 1 ;;
     esac
-
-    # Cada 2 acciones avanzamos el tiempo para que no sea tan lento
-    if [ "$actions_taken" -ge 2 ]; then
-        echo -e "${COLOR_GRAY}Ha pasado un tiempo...${COLOR_RESET}"
-        sleep 1
-        advance_time
-    fi
 done
