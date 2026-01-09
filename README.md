@@ -9,25 +9,33 @@ Un simulador interactivo por terminal basado en la popular novela visual **Teach
 
 ## 🌟 Características Principales
 
+- **Motor Híbrido Bash/Python**: Combina una interfaz de terminal rápida con un motor de lógica potente en Python.
 - **Sistema de Afecto y Confianza**: Las reacciones de Sylvie evolucionan de la desconfianza total al afecto profundo basándose en tus acciones.
-- **Motor de Diálogos Dinámicos**: Más de 60 variaciones de texto que dependen del nivel de felicidad, la acción reciente y el momento del día.
+- **Motor de Diálogos Dinámicos**: Decenas de variaciones de texto que dependen del nivel de felicidad, la acción reciente y el momento del día.
 - **Ciclo de Tiempo Realista**: Sistema de reloj interno que avanza con cada acción, alternando entre mañana, tarde y noche.
 - **Interfaz ASCII**: Representación visual ligera y estética optimizada para cualquier terminal con soporte de colores ANSI.
-- **Persistencia de Datos**: El progreso se guarda automáticamente en `~/.sylvie_data`.
-- **Arquitectura Modular**: Diálogos separados en módulos para facilitar la personalización.
+- **Persistencia en JSON**: El progreso se guarda automáticamente en `~/.sylvie_save.json`.
 
 ## 📂 Estructura del Proyecto
 
 ```text
 tfeeling-CLI/
-├── sylvie.sh             # Script principal (Lógica y UI)
-└── modules/
-    └── dialogues.sh      # Base de datos de diálogos
+├── sylvie.sh             # Interfaz de usuario y menús (Bash)
+├── modules/
+│   ├── engine.py         # Motor de lógica y estadísticas (Python)
+│   └── dialogues.sh      # Base de datos de diálogos (Bash)
+└── README.md             # Documentación del proyecto
 ```
 
-## 🚀 Instalación y Uso
+## 🚀 Instalación y Requisitos
 
-1. **Clonar o descargar** el repositorio en tu máquina local.
+### Requisitos
+- **Bash** (Linux/macOS/WSL)
+- **Python 3.x**
+- **jq** (Procesador de JSON para terminal)
+
+### Uso
+1. **Clonar o descargar** el repositorio.
 2. Asegúrate de que los archivos tengan permisos de ejecución:
    ```bash
    chmod +x sylvie.sh
@@ -52,7 +60,8 @@ tfeeling-CLI/
 
 ## 🛠️ Personalización
 
-Puedes añadir tus propios diálogos editando el archivo `modules/dialogues.sh`. Simplemente añade nuevas líneas a los arrays correspondientes siguiendo el formato de Bash.
+- **Diálogos**: Puedes añadir tus propios diálogos editando `modules/dialogues.sh`.
+- **Lógica**: La lógica de estadísticas y tiempo reside en `modules/engine.py`.
 
 ## 📝 Licencia
 
