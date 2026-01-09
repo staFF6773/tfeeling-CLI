@@ -262,8 +262,8 @@ while true; do
         *) echo "Opción no válida." ; sleep 1 ;;
     esac
 
-    # Cada 3 acciones avanzamos el tiempo para que no sea tan lento
-    if [ "$actions_taken" -ge 3 ]; then
+    # Cada 2 acciones avanzamos el tiempo para que no sea tan lento
+    if [ "$actions_taken" -ge 2 ]; then
         echo -e "${COLOR_GRAY}Ha pasado un tiempo...${COLOR_RESET}"
         sleep 1
         advance_time
