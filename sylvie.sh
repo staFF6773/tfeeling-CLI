@@ -36,7 +36,7 @@ fi
 source "$DATA_FILE"
 
 # Cargar diálogos (si existe el archivo)
-DIALOGUES_FILE="$(dirname "$0")/dialogues.sh"
+DIALOGUES_FILE="$(dirname "$0")/modules/dialogues.sh"
 if [ -f "$DIALOGUES_FILE" ]; then
     source "$DIALOGUES_FILE"
 else
