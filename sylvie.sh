@@ -205,6 +205,18 @@ talk() {
 #              Resetea el contador de acciones tras el avance.
 # (Esta función ahora es manejada por el motor Python)
 
+# @function show_credits
+# @description Muestra los créditos del proyecto.
+show_credits() {
+    draw_sylvie
+    echo -e "${COLOR_WHITE}--- CRÉDITOS ---${COLOR_RESET}"
+    echo -e "Concepto Original: ${COLOR_PINK}Ray-K${COLOR_RESET} (Teaching Feeling)"
+    echo -e "Lógica y CLI: ${COLOR_CYAN}staFF6773${COLOR_RESET}"
+    echo -e "Versión: ${COLOR_PINK}1.0.0${COLOR_RESET}"
+    echo -e "${COLOR_GRAY}---------------------------${COLOR_RESET}"
+    read -n 1 -s -r -p "Presiona cualquier tecla para volver..."
+}
+
 # --- Menú Principal ---
 while true; do
     # Sincronizar estado antes de mostrar el menú
@@ -214,14 +226,16 @@ while true; do
     echo "1) Acariciar cabeza"
     echo "2) Hablar"
     echo "3) Dar dulce"
-    echo "4) Salir"
+    echo "4) Créditos"
+    echo "5) Salir"
     read -p "Elige una opción: " opt
 
     case $opt in
         1) pat_head ;;
         2) talk ;;
         3) give_treat ;;
-        4) 
+        4) show_credits ;;
+        5) 
             echo "Hasta luego..."
             exit 0 
             ;;
