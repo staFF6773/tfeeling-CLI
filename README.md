@@ -63,6 +63,11 @@ tfeeling-CLI/
 - **Diálogos**: Puedes añadir tus propios diálogos editando `modules/dialogues.sh`.
 - **Lógica**: La lógica de estadísticas y tiempo reside en `modules/engine.py`.
 
+## 👥 Créditos
+
+- **Ray-K**: Creador original de la novela visual *Teaching Feeling*.
+- **staFF6773**: Desarrollador de la base del simulador CLI.
+
 ## 📝 Licencia
 
 Este proyecto está bajo la Licencia GPL. Siéntete libre de usarlo, modificarlo y compartirlo.
