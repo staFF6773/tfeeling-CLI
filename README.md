@@ -1,72 +1,64 @@
-# Sylvie CLI - Teaching Feeling Simulation
+# Sylvie TUI - Teaching Feeling Simulation (Rust Edition)
 
-![Version](https://img.shields.io/badge/version-1.0.0-pink)
+![Version](https://img.shields.io/badge/version-1.1.0-pink)
 ![License](https://img.shields.io/badge/GPL-3.0-blue)
+![Rust](https://img.shields.io/badge/Rust-Ratatui-orange)
 
-Un simulador interactivo por terminal basado en la popular novela visual **Teaching Feeling**. Gestiona el bienestar de Sylvie a través de un sistema de estadísticas dinámico, diálogos contextuales y un ciclo de tiempo realista.
+Un simulador interactivo por terminal basado en la popular novela visual **Teaching Feeling**, ahora portado completamente a **Rust** para una experiencia más fluida y profesional con **Ratatui**.
 
-<img width="1365" height="767" alt="imagen" src="https://github.com/user-attachments/assets/03044e36-15ab-4747-b926-7b3a29368ea5" />
+<img width="965" height="625" alt="imagen" src="https://github.com/user-attachments/assets/ca50060a-14da-476e-aa4b-5da01914115e" />
+
 
 ## 🌟 Características Principales
 
-- **Motor Híbrido Bash/Python**: Combina una interfaz de terminal rápida con un motor de lógica potente en Python.
-- **Sistema de Afecto y Confianza**: Las reacciones de Sylvie evolucionan de la desconfianza total al afecto profundo basándose en tus acciones.
-- **Motor de Diálogos Dinámicos**: Decenas de variaciones de texto que dependen del nivel de felicidad, la acción reciente y el momento del día.
-- **Ciclo de Tiempo Realista**: Sistema de reloj interno que avanza con cada acción, alternando entre mañana, tarde y noche.
-- **Interfaz ASCII**: Representación visual ligera y estética optimizada para cualquier terminal con soporte de colores ANSI.
+- **Motor Nativo en Rust**: Alto rendimiento y gestión de estado robusta.
+- **Interfaz Ratatui**: Una TUI moderna con barras de estado, navegación por teclado y divisiones de pantalla.
+- **Sistema de Afecto y Confianza**: Las reacciones de Sylvie evolucionan basándose en tus acciones.
+- **Motor de Diálogos Dinámicos**: Selección inteligente de diálogos basada en estadísticas y momento del día.
 - **Persistencia en JSON**: El progreso se guarda automáticamente en `~/.sylvie_save.json`.
 
 ## 📂 Estructura del Proyecto
 
 ```text
 tfeeling-CLI/
-├── sylvie.sh             # Interfaz de usuario y menús (Bash)
+├── src/
+│   ├── main.rs           # Entrada de la aplicación y manejo de terminal
+│   ├── engine.rs         # Motor de lógica y estadísticas
+│   └── ui.rs             # Definición de la interfaz Ratatui
 ├── modules/
-│   ├── engine.py         # Motor de lógica y estadísticas (Python)
-│   └── dialogues.sh      # Base de datos de diálogos (Bash)
-└── README.md             # Documentación del proyecto
+│   └── dialogues.json    # Base de datos de diálogos
+├── Cargo.toml            # Dependencias de Rust
+└── README.md             # Documentación
 ```
 
 ## 🚀 Instalación y Requisitos
 
 ### Requisitos
-- **Bash** (Linux/macOS/WSL)
-- **Python 3.x**
-- **jq** (Procesador de JSON para terminal)
+- **Rust** (edición 2024 o superior)
+- **Cargo** (gestor de paquetes de Rust)
 
-### Uso
+### Compilación y Uso
 1. **Clonar o descargar** el repositorio.
-2. Asegúrate de que los archivos tengan permisos de ejecución:
+2. **Compilar el proyecto**:
    ```bash
-   chmod +x sylvie.sh
+   cargo build --release
    ```
 3. **Ejecutar el simulador**:
    ```bash
-   ./sylvie.sh
+   ./target/release/sylvie-tui
    ```
+   *O simplemente usa `cargo run --release` para compilar y ejecutar en un solo paso.*
 
-## 🎮 Mecánicas de Juego
-
-| Acción | Impacto en Afecto | Impacto en Confianza | Descripción |
-| :--- | :---: | :---: | :--- |
-| **Acariciar** | +2 | +1 | Gana su confianza poco a poco. |
-| **Hablar** | Variable | Variable | Mantén una conversación para saber cómo se siente. |
-| **Dar Dulce** | +5 | +2 | El camino más rápido hacia su corazón. |
-
-### Estados de Sylvie
-- **Desconfianza** (Afecto < 20): Respuestas temerosas y distantes.
-- **Neutral** (Afecto 20-60): Comienza a sentirse cómoda y agradecida.
-- **Confianza** (Afecto > 60): Se muestra cariñosa y te llama "maestro".
-
-## 🛠️ Personalización
-
-- **Diálogos**: Puedes añadir tus propios diálogos editando `modules/dialogues.sh`.
-- **Lógica**: La lógica de estadísticas y tiempo reside en `modules/engine.py`.
+## 🎮 Controles
+- **Flechas (Arriba/Abajo)**: Navegar por el menú.
+- **Enter**: Seleccionar acción.
+- **Esc / Q**: Salir del juego.
 
 ## 👥 Créditos
 
 - **Ray-K**: Creador original de la novela visual *Teaching Feeling*.
-- **staFF6773**: Desarrollador de la base del simulador CLI.
+- **staFF6773**: Desarrollador original de la versión CLI.
+- **Antigravity**: Port a Rust y rediseño de TUI.
 
 ## 📝 Licencia
 
