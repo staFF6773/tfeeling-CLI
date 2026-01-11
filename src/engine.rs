@@ -3,6 +3,8 @@ use std::fs;
 use std::path::PathBuf;
 use rand::seq::IndexedRandom;
 
+fn default_day() -> u32 { 1 }
+
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct GameState {
     pub affection: i32,
@@ -12,6 +14,8 @@ pub struct GameState {
     pub time_of_day: String,
     pub hour: u32,
     pub minute: u32,
+    #[serde(default = "default_day")]
+    pub day: u32,
     pub actions_taken: u32,
     pub last_dialogue: String,
 }
@@ -26,6 +30,7 @@ impl Default for GameState {
             time_of_day: "morning".to_string(),
             hour: 8,
             minute: 0,
+            day: 1,
             actions_taken: 0,
             last_dialogue: "...".to_string(),
         }
@@ -95,26 +100,32 @@ impl Engine {
         self.state.actions_taken += 1;
         self.state.last_dialogue = self.get_random_dialogue(Some(action));
 
-        if self.state.actions_taken >= 2 {
-            self.advance_time();
-        }
+        // Cada acción consume tiempo
+        let minutes = match action {
+            "talk" => 15,
+            "give_treat" => 10,
+            "pat_head" => 5,
+            _ => 30,
+        };
+        
+        self.advance_time(minutes);
 
         let _ = self.save_state();
     }
 
-    pub fn advance_time(&mut self) {
-        self.state.minute += 30;
-        if self.state.minute >= 60 {
-            self.state.minute = 0;
+    pub fn advance_time(&mut self, minutes: u32) {
+        self.state.minute += minutes;
+        while self.state.minute >= 60 {
+            self.state.minute -= 60;
             self.state.hour += 1;
         }
 
-        if self.state.hour >= 24 {
-            self.state.hour = 0;
+        while self.state.hour >= 24 {
+            self.state.hour -= 24;
+            self.state.day += 1;
         }
 
         self.update_time_of_day();
-        self.state.actions_taken = 0;
     }
 
     fn update_time_of_day(&mut self) {
@@ -184,5 +195,59 @@ impl Engine {
 
         let mut rng = rand::rng();
         choices.choose(&mut rng).and_then(|v: &&serde_json::Value| v.as_str()).unwrap_or("...").to_string()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_time_progression() {
+        let mut state = GameState::default();
+        state.hour = 23;
+        state.minute = 45;
+        state.day = 1;
+
+        let mut engine = Engine {
+            state: state.clone(),
+            dialogues: serde_json::Value::Null,
+            save_path: PathBuf::from("test_save.json"),
+        };
+
+        engine.advance_time(15);
+        assert_eq!(engine.state.day, 2);
+        assert_eq!(engine.state.hour, 0);
+        assert_eq!(engine.state.minute, 0);
+
+        engine.advance_time(70);
+        assert_eq!(engine.state.hour, 1);
+        assert_eq!(engine.state.minute, 10);
+    }
+
+    #[test]
+    fn test_time_of_day_update() {
+        let state = GameState::default();
+        let mut engine = Engine {
+            state,
+            dialogues: serde_json::Value::Null,
+            save_path: PathBuf::from("test_save_2.json"),
+        };
+
+        engine.state.hour = 5;
+        engine.update_time_of_day();
+        assert_eq!(engine.state.time_of_day, "night");
+
+        engine.state.hour = 8;
+        engine.update_time_of_day();
+        assert_eq!(engine.state.time_of_day, "morning");
+
+        engine.state.hour = 14;
+        engine.update_time_of_day();
+        assert_eq!(engine.state.time_of_day, "afternoon");
+
+        engine.state.hour = 20;
+        engine.update_time_of_day();
+        assert_eq!(engine.state.time_of_day, "night");
     }
 }
