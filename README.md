@@ -44,7 +44,7 @@ tfeeling-CLI/
    ```
 3. **Ejecutar el simulador**:
    ```bash
-   ./target/release/sylvie-tui
+   ./target/release/tfeeling-CLI
    ```
    *O simplemente usa `cargo run --release` para compilar y ejecutar en un solo paso.*
 
