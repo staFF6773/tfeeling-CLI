@@ -9,6 +9,12 @@ use ratatui::{
 };
 use std::error::Error;
 use std::time::Duration;
+use ratatui_image::{
+    picker::Picker,
+    protocol::StatefulProtocol,
+    StatefulImage,
+    Resize,
+};
 
 pub fn run_app<B: Backend>(terminal: &mut Terminal<B>, mut engine: Engine) -> Result<(), Box<dyn Error>> 
 where 
@@ -19,8 +25,14 @@ where
 
     let mut visible_chars = 0;
 
+    // Load image
+    let image_path = "modules/art/Sylvie-base.png";
+    let dyn_image = image::open(image_path)?;
+    let picker = Picker::from_query_stdio().unwrap_or_else(|_| Picker::halfblocks());
+    let mut image_state = picker.new_resize_protocol(dyn_image);
+
     loop {
-        terminal.draw(|f| ui(f, &engine, &mut menu_state, visible_chars))?;
+        terminal.draw(|f| ui(f, &engine, &mut menu_state, visible_chars, &mut image_state))?;
 
         if event::poll(Duration::from_millis(30))? {
             if let Event::Key(key) = event::read()? {
@@ -89,7 +101,7 @@ where
     }
 }
 
-fn ui(f: &mut ratatui::Frame, engine: &Engine, menu_state: &mut ListState, visible_chars: usize) {
+fn ui(f: &mut ratatui::Frame, engine: &Engine, menu_state: &mut ListState, visible_chars: usize, image_state: &mut StatefulProtocol) {
     let chunks = Layout::vertical([
         Constraint::Length(3), // Status bar
         Constraint::Min(10),   // Main area
@@ -119,27 +131,17 @@ fn ui(f: &mut ratatui::Frame, engine: &Engine, menu_state: &mut ListState, visib
     ])
     .split(chunks[1]);
 
-    // Sylvie ASCII Art
-    let sylvie_art = "
-                   #########                      
-                 ###+***##*#**                    
-                 *#+**++***=*++=:                  
-                 #*+****#**+*#+++                  
-               # #**###*%##*--*##+                 
-                 *#**#%-#*##:::-%*                 
-                ####*-%@%@-%:@=-**                 
-                %###*#:++::::*%-#*                 
-               -%###*--+-:::::: =-                 
-               +%#%#**##---::: *#                  
-                *#**#*=+++-=-+*=*                  
-                -=-=-#*----+------                 
-              ====---=--+-=-==--=---               
-            ========--=====-=:==--:---:              ";
+    // Sylvie Image
+    let sylvie_block = Block::default()
+        .borders(Borders::ALL)
+        .title(" Sylvie ")
+        .border_style(Style::default().fg(Color::Magenta));
     
-    let sylvie_block = Paragraph::new(format!("\n{}\n\n       [ {} ]", sylvie_art, engine.state.name))
-        .block(Block::default().borders(Borders::ALL).title(" Sylvie ").border_style(Style::default().fg(Color::Magenta)))
-        .style(Style::default().fg(Color::Magenta));
+    let inner_area = sylvie_block.inner(main_chunks[0]);
     f.render_widget(sylvie_block, main_chunks[0]);
+    
+    let image = StatefulImage::new().resize(Resize::Fit(None));
+    f.render_stateful_widget(image, inner_area, image_state);
 
     // Dialogue Box
     let displayed_text: String = engine.state.last_dialogue.chars().take(visible_chars).collect();
