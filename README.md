@@ -58,7 +58,6 @@ tfeeling-CLI/
 
 - **Ray-K**: Creador original de la novela visual *Teaching Feeling*.
 - **staFF6773**: Desarrollador original de la versión CLI.
-- **Antigravity**: Port a Rust y rediseño de TUI.
 
 ## 📝 Licencia
 
