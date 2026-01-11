@@ -111,10 +111,12 @@ fn ui(f: &mut ratatui::Frame, engine: &Engine, menu_state: &mut ListState, visib
 
     // Status Bar
     let status_text = format!(
-        " [ Día {} ] Afecto: {} | Confianza: {} | Hora: {}:{:02} | Fase: {}",
+        " [ Día {} ] Afecto: {} (+{}/10) | Confianza: {} (+{}/5) | Hora: {}:{:02} | Fase: {}",
         engine.state.day,
         engine.state.affection,
+        engine.state.daily_affection,
         engine.state.trust,
+        engine.state.daily_trust,
         engine.state.hour,
         engine.state.minute,
         engine.state.time_of_day
