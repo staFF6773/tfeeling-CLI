@@ -30,7 +30,22 @@
         "¿Me dejarías ir algún día?",
         "Nunca pensé que alguien me haría sentir así...",
         "Cada vez que te acercas, siento un nudo en el estómago...",
-        "No sé si me siento más a salvo o más atrapada..."
+        "No sé si me siento más a salvo o más atrapada...",
+        "No entiendo por qué sigues aquí conmigo...",
+        "¿De verdad no esperas nada a cambio?",
+        "Cuando sonríes así me pongo nerviosa...",
+        "Siento que algo malo pasará si me relajo demasiado...",
+        "No sé cómo comportarme cuando me hablas con tanta calma...",
+        "¿Y si todo esto desaparece de repente?",
+        "No sé si merezco este trato...",
+        "Mi cuerpo aún reacciona antes de que mi mente lo haga...",
+        "Perdón si me sobresalto...",
+        "Me cuesta dormir sin pensar en el pasado...",
+        "¿Por qué no me gritas como los demás?",
+        "Cuando hay silencio, mi cabeza no deja de pensar...",
+        "No sé qué se supone que debo sentir ahora...",
+        "A veces quiero huir, aunque no sepa a dónde...",
+        "Me da miedo acostumbrarme a esto..."
     ],
     "neutral": [
         "Gracias por la comida.",
@@ -62,7 +77,22 @@
         "¿Qué haría si pudiera decidir algo por mí misma?",
         "Gracias por todo lo que haces por mí.",
         "¿Suele caminar por aquí? Es un buen lugar para reflexionar.",
-        "Me pregunto si alguna vez podré ser más útil para ti."
+        "Me pregunto si alguna vez podré ser más útil para ti.",
+        "Hoy el aire se siente diferente.",
+        "He estado ordenando un poco, espero que esté bien.",
+        "Me gusta aprender cosas nuevas poco a poco.",
+        "Creo que empiezo a entender este lugar.",
+        "Hoy no tuve tanto miedo como ayer.",
+        "A veces me sorprendo sonriendo sin darme cuenta.",
+        "Me siento cansada, pero tranquila.",
+        "Gracias por escucharme.",
+        "Estoy intentando recordar quién era antes.",
+        "Me gusta cuando las cosas son simples.",
+        "Hoy estuve pensando mucho.",
+        "Creo que empiezo a conocer mis propios gustos.",
+        "El tiempo aquí pasa de una forma extraña.",
+        "Me agrada esta rutina.",
+        "Siento que poco a poco puedo respirar mejor."
     ],
     "trust": [
         "Me siento muy segura a tu lado.",
@@ -94,7 +124,22 @@
         "Tu bondad es algo que nunca dejaré de admirar.",
         "Estar a tu lado es el lugar donde más feliz me siento.",
         "A veces me siento tan afortunada de tenerte cerca.",
-        "Eres mi refugio, mi protector, mi amigo."
+        "Eres mi refugio, mi protector, mi amigo.",
+        "Contigo siento que puedo bajar la guardia.",
+        "Cuando me hablas, todo parece más sencillo.",
+        "Ya no me escondo cuando escucho tus pasos.",
+        "Confío en ti más de lo que pensé posible.",
+        "Me gusta saber que estás cerca.",
+        "Gracias por tenerme paciencia.",
+        "A tu lado no siento prisa.",
+        "Me haces sentir que pertenezco a algún lugar.",
+        "No tengo miedo cuando me miras así.",
+        "Sé que no me harás daño.",
+        "Por primera vez, quiero pensar en el mañana.",
+        "Me siento aceptada tal como soy.",
+        "Gracias por no rendirte conmigo.",
+        "Estar contigo me da mucha calma.",
+        "Creo que empiezo a sonreír de verdad."
     ],
     "actions": {
         "pat_head": {
@@ -108,7 +153,16 @@
                 "No estoy segura de cómo me siento con esto...",
                 "Creo que debería acostumbrarme...",
                 "¿Me va a doler si me tocas de nuevo?",
-                "No me lo esperaba..."
+                "No me lo esperaba...",
+                "Ah... no me lo esperaba...",
+                "Está bien... creo.",
+                "Todavía me pone un poco tensa...",
+                "Mi corazón late rápido...",
+                "Es extraño, pero no duele...",
+                "Supongo que puedo acostumbrarme...",
+                "Me quedo quieta, ¿está bien?",
+                "Nunca nadie hacía esto antes...",
+                "No estoy segura de cómo reaccionar..."
             ],
             "high": [
                 "Me encanta cuando haces eso.",
@@ -120,7 +174,17 @@
                 "Me haces sentir protegida.",
                 "Nunca quiero que dejes de acariciarme...",
                 "Es tan relajante estar cerca de ti.",
-                "Me gusta cuando me acaricias la cabeza, me hace sentir especial."
+                "Me gusta cuando me acaricias la cabeza, me hace sentir especial.",
+                "Me hace sentir muy tranquila...",
+                "Cierro los ojos sin darme cuenta...",
+                "Me gusta sentir tu mano ahí.",
+                "Es como si todo se calmara.",
+                "Me siento cuidada.",
+                "Podría dormirme así...",
+                "Me hace sonreír sin querer.",
+                "Siento mucho cariño cuando haces eso.",
+                "Es uno de mis momentos favoritos.",
+                "Gracias... de verdad."
             ]
         },
         "give_treat": {
@@ -134,7 +198,17 @@
                 "Está bien... No es lo que esperaba, pero está bien.",
                 "No estoy acostumbrada a que me den cosas como esta...",
                 "Gracias, pero... ¿seguro que no es para ti?",
-                "¿Debería aceptar todo lo que me das?"
+                "¿Debería aceptar todo lo que me das?",
+                "Gracias... lo aceptaré.",
+                "No sabía que me gustaba esto...",
+                "Es raro recibir regalos.",
+                "Me siento un poco culpable, pero gracias...",
+                "Nunca me daban cosas solo porque sí...",
+                "Lo guardaré con cuidado.",
+                "Gracias por compartir conmigo.",
+                "No sé cómo agradecerte bien...",
+                "Es sencillo, pero me gusta.",
+                "Gracias por pensar en mí."
             ],
             "high": [
                 "¡Está delicioso! ¡Muchas gracias, maestro!",
@@ -146,7 +220,17 @@
                 "¿Cómo supiste que me gustaba tanto?",
                 "Es perfecto... ¿puedo tener un poco más?",
                 "Este sabor... nunca había probado algo tan bueno.",
-                "¡Me haces sentir tan especial con estos detalles!"
+                "¡Me haces sentir tan especial con estos detalles!",
+                "¡Me pone muy feliz!",
+                "Siempre sabes animarme.",
+                "Lo disfruto mucho contigo.",
+                "Me hace sentir muy querida.",
+                "Cada detalle tuyo me emociona.",
+                "Nunca olvidaré estos momentos.",
+                "Es delicioso, pero lo mejor es que viene de ti.",
+                "Gracias por hacerme sonreír así.",
+                "Me siento muy afortunada.",
+                "Esto significa mucho para mí."
             ]
         }
     },
@@ -161,7 +245,12 @@
             "¿Es un buen día para salir?",
             "¿Qué vamos a hacer hoy, maestro?",
             "La luz del sol hace que todo se vea tan bonito.",
-            "Espero que tengas un buen día por delante."
+            "Espero que tengas un buen día por delante.",
+            "Dormí bastante bien hoy.",
+            "Despertar aquí se siente seguro.",
+            "La mañana ya no me da miedo.",
+            "Me gusta empezar el día contigo.",
+            "Hoy me levanté con más ánimo."
         ],
         "afternoon": [
             "La tarde es muy tranquila, ¿verdad?",
@@ -173,7 +262,12 @@
             "Ya es tarde... ¿no deberíamos descansar un poco?",
             "Me gusta estar contigo cuando el día está tan tranquilo.",
             "¿Es tarde ya? El tiempo pasa tan rápido.",
-            "El sol empieza a ponerse, el cielo se ve tan bonito."
+            "El sol empieza a ponerse, el cielo se ve tan bonito.",
+            "El día ha pasado muy tranquilo.",
+            "Me gusta compartir la tarde contigo.",
+            "El sol se siente cálido.",
+            "Todo está muy silencioso y agradable.",
+            "La tarde me hace sentir en paz."
         ],
         "night": [
             "Ya es muy tarde...",
@@ -189,7 +283,12 @@
             "¿Te parece si hablamos un poco antes de dormir?",
             "¿Me contarías un cuento para dormir?",
             "Las estrellas se ven tan lejanas, pero al mismo tiempo cerca.",
-            "Siempre me siento más tranquila cuando es de noche."
+            "Siempre me siento más tranquila cuando es de noche.",
+            "La noche ya no me asusta tanto.",
+            "Me siento segura antes de dormir.",
+            "Gracias por quedarte cerca.",
+            "La oscuridad es más amable ahora.",
+            "Buenas noches... gracias por hoy."
         ]
     }
 }
