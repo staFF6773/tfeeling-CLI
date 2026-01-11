@@ -68,7 +68,7 @@ where
                                 Some(1) => engine.interact("talk"),
                                 Some(2) => engine.interact("give_treat"),
                                 Some(3) => {
-                                    engine.state.last_dialogue = "Concepto Original: Ray-K\nLógica y TUI: staFF6773 (Rust Port)\nVersión: 1.0.0 (Rust)".to_string();
+                                    engine.state.last_dialogue = "Concepto Original: Ray-K\nLógica y TUI: staFF6773 (Rust Port)\nVersión: 1.1.0 (Rust)".to_string();
                                 },
                                 Some(4) => return Ok(()),
                                 _ => {}
@@ -99,7 +99,8 @@ fn ui(f: &mut ratatui::Frame, engine: &Engine, menu_state: &mut ListState, visib
 
     // Status Bar
     let status_text = format!(
-        " Afecto: {} | Confianza: {} | Hora: {}:{:02} | Fase: {}",
+        " [ Día {} ] Afecto: {} | Confianza: {} | Hora: {}:{:02} | Fase: {}",
+        engine.state.day,
         engine.state.affection,
         engine.state.trust,
         engine.state.hour,
