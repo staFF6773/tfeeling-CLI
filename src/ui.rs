@@ -8,6 +8,7 @@ use ratatui::{
     Terminal,
 };
 use std::error::Error;
+use std::time::Duration;
 
 pub fn run_app<B: Backend>(terminal: &mut Terminal<B>, mut engine: Engine) -> Result<(), Box<dyn Error>> 
 where 
@@ -16,59 +17,79 @@ where
     let mut menu_state = ListState::default();
     menu_state.select(Some(0));
 
-    loop {
-        terminal.draw(|f| ui(f, &engine, &mut menu_state))?;
+    let mut visible_chars = 0;
 
-        if let Event::Key(key) = event::read()? {
-            match key.code {
-                KeyCode::Char('q') | KeyCode::Esc => return Ok(()),
-                KeyCode::Up => {
-                    let i = match menu_state.selected() {
-                        Some(i) => {
-                            if i == 0 {
-                                4
-                            } else {
-                                i - 1
+    loop {
+        terminal.draw(|f| ui(f, &engine, &mut menu_state, visible_chars))?;
+
+        if event::poll(Duration::from_millis(30))? {
+            if let Event::Key(key) = event::read()? {
+                match key.code {
+                    KeyCode::Char('q') | KeyCode::Esc => return Ok(()),
+                    KeyCode::Up => {
+                        let i = match menu_state.selected() {
+                            Some(i) => {
+                                if i == 0 {
+                                    4
+                                } else {
+                                    i - 1
+                                }
                             }
-                        }
-                        None => 0,
-                    };
-                    menu_state.select(Some(i));
-                }
-                KeyCode::Down => {
-                    let i = match menu_state.selected() {
-                        Some(i) => {
-                            if i >= 4 {
-                                0
-                            } else {
-                                i + 1
-                            }
-                        }
-                        None => 0,
-                    };
-                    menu_state.select(Some(i));
-                }
-                KeyCode::Enter => {
-                    match menu_state.selected() {
-                        Some(0) => engine.interact("pat_head"),
-                        Some(1) => engine.interact("talk"),
-                        Some(2) => engine.interact("give_treat"),
-                        Some(3) => {
-                            // Credits handled in dialogue for now or a separate screen
-                            // For simplicity, we just set a "credits" dialogue
-                            engine.state.last_dialogue = "Concepto Original: Ray-K\nLógica y TUI: Antigravity (Rust Port)\nVersión: 1.0.0 (Rust)".to_string();
-                        },
-                        Some(4) => return Ok(()),
-                        _ => {}
+                            None => 0,
+                        };
+                        menu_state.select(Some(i));
                     }
+                    KeyCode::Down => {
+                        let i = match menu_state.selected() {
+                            Some(i) => {
+                                if i >= 4 {
+                                    0
+                                } else {
+                                    i + 1
+                                }
+                            }
+                            None => 0,
+                        };
+                        menu_state.select(Some(i));
+                    }
+                    KeyCode::Enter => {
+                        let dialogue_len = engine.state.last_dialogue.chars().count();
+                        if visible_chars < dialogue_len {
+                            // Skip animation
+                            visible_chars = dialogue_len;
+                        } else if !engine.state.last_dialogue.is_empty() && engine.state.last_dialogue != "..." {
+                            // Dialogue is finished, clear it
+                            engine.state.last_dialogue = "...".to_string();
+                            visible_chars = 3;
+                        } else {
+                            // Dialogue is empty/cleared, perform action
+                            match menu_state.selected() {
+                                Some(0) => engine.interact("pat_head"),
+                                Some(1) => engine.interact("talk"),
+                                Some(2) => engine.interact("give_treat"),
+                                Some(3) => {
+                                    engine.state.last_dialogue = "Concepto Original: Ray-K\nLógica y TUI: staFF6773 (Rust Port)\nVersión: 1.0.0 (Rust)".to_string();
+                                },
+                                Some(4) => return Ok(()),
+                                _ => {}
+                            }
+                            visible_chars = 0;
+                        }
+                    }
+                    _ => {}
                 }
-                _ => {}
+            }
+        }
+ else {
+            let dialogue_len = engine.state.last_dialogue.chars().count();
+            if visible_chars < dialogue_len {
+                visible_chars += 1;
             }
         }
     }
 }
 
-fn ui(f: &mut ratatui::Frame, engine: &Engine, menu_state: &mut ListState) {
+fn ui(f: &mut ratatui::Frame, engine: &Engine, menu_state: &mut ListState, visible_chars: usize) {
     let chunks = Layout::vertical([
         Constraint::Length(3), // Status bar
         Constraint::Min(10),   // Main area
@@ -120,7 +141,8 @@ fn ui(f: &mut ratatui::Frame, engine: &Engine, menu_state: &mut ListState) {
     f.render_widget(sylvie_block, main_chunks[0]);
 
     // Dialogue Box
-    let dialogue = Paragraph::new(engine.state.last_dialogue.as_str())
+    let displayed_text: String = engine.state.last_dialogue.chars().take(visible_chars).collect();
+    let dialogue = Paragraph::new(displayed_text)
         .block(Block::default().borders(Borders::ALL).title(" Diálogo ").border_style(Style::default().fg(Color::White)))
         .style(Style::default().fg(Color::White))
         .wrap(Wrap { trim: true });
