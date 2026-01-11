@@ -1,4 +1,4 @@
-# Sylvie TUI - Teaching Feeling Simulation (Rust Edition)
+# tfeeling-CLI - Teaching Feeling Simulation (Rust Edition)
 
 ![Version](https://img.shields.io/badge/version-1.1.0-pink)
 ![License](https://img.shields.io/badge/GPL-3.0-blue)
