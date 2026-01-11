@@ -6,7 +6,7 @@
 
 Un simulador interactivo por terminal basado en la popular novela visual **Teaching Feeling**, ahora portado completamente a **Rust** para una experiencia más fluida y profesional con **Ratatui**.
 
-<img width="1365" height="767" alt="imagen" src="https://github.com/user-attachments/assets/ec9b3410-21df-4524-a4a2-b1ab5505bceb" />
+<img width="1365" height="765" alt="imagen" src="https://github.com/user-attachments/assets/4ddc93d3-ddc9-42a7-bf79-73f2ef352bd7" />
 
 ## 🌟 Características Principales
 
