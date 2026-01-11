@@ -87,6 +87,8 @@ impl Engine {
     }
 
     pub fn interact(&mut self, action: &str) {
+        let old_phase = self.state.time_of_day.clone();
+
         match action {
             "pat_head" => {
                 if self.state.daily_affection < 10 {
@@ -129,6 +131,11 @@ impl Engine {
         
         self.advance_time(minutes);
 
+        // Si la fase cambió, Sylvie saluda
+        if self.state.time_of_day != old_phase {
+            self.state.last_dialogue = self.get_time_greeting();
+        }
+
         let _ = self.save_state();
     }
 
@@ -161,6 +168,18 @@ impl Engine {
         } else {
             "night".to_string()
         };
+    }
+
+    fn get_time_greeting(&self) -> String {
+        if let Some(time_node) = self.dialogues.get("time") {
+            if let Some(list) = time_node.get(&self.state.time_of_day).and_then(|v| v.as_array()) {
+                if !list.is_empty() {
+                    let mut rng = rand::rng();
+                    return list.choose(&mut rng).and_then(|v| v.as_str()).unwrap_or("...").to_string();
+                }
+            }
+        }
+        "...".to_string()
     }
 
     pub fn get_random_dialogue(&self, action_override: Option<&str>) -> String {
@@ -289,5 +308,31 @@ mod tests {
         engine.state.hour = 20;
         engine.update_time_of_day();
         assert_eq!(engine.state.time_of_day, "night");
+    }
+
+    #[test]
+    fn test_phase_change_dialogue() {
+        let mut engine = Engine {
+            state: GameState::default(),
+            dialogues: serde_json::from_str(r#"{
+                "time": {
+                    "morning": ["morg"],
+                    "afternoon": ["aft"],
+                    "night": ["ngt"]
+                },
+                "actions": { "talk": { "low": ["..."], "high": ["..."] } }
+            }"#).unwrap(),
+            save_path: PathBuf::from("test_save_phase.json"),
+        };
+
+        // Empieza a las 11:00 (morning)
+        engine.state.hour = 11;
+        engine.state.time_of_day = "morning".to_string();
+
+        // Una acción (2h) -> 13:00 (afternoon)
+        engine.interact("talk");
+
+        assert_eq!(engine.state.time_of_day, "afternoon");
+        assert_eq!(engine.state.last_dialogue, "aft");
     }
 }
