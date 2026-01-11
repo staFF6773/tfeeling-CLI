@@ -17,6 +17,8 @@ pub struct GameState {
     #[serde(default = "default_day")]
     pub day: u32,
     pub actions_taken: u32,
+    pub daily_affection: i32,
+    pub daily_trust: i32,
     pub last_dialogue: String,
 }
 
@@ -32,6 +34,8 @@ impl Default for GameState {
             minute: 0,
             day: 1,
             actions_taken: 0,
+            daily_affection: 0,
+            daily_trust: 0,
             last_dialogue: "...".to_string(),
         }
     }
@@ -85,14 +89,34 @@ impl Engine {
     pub fn interact(&mut self, action: &str) {
         match action {
             "pat_head" => {
-                self.state.affection += 2;
-                self.state.trust += 1;
+                if self.state.daily_affection < 10 {
+                    self.state.affection += 2;
+                    self.state.daily_affection += 2;
+                }
+                if self.state.daily_trust < 5 {
+                    self.state.trust += 1;
+                    self.state.daily_trust += 1;
+                }
             }
             "give_treat" => {
-                self.state.affection += 5;
-                self.state.trust += 2;
+                if self.state.daily_affection < 10 {
+                    let gain = (10 - self.state.daily_affection).min(5);
+                    self.state.affection += gain;
+                    self.state.daily_affection += gain;
+                }
+                if self.state.daily_trust < 5 {
+                    let gain = (5 - self.state.daily_trust).min(2);
+                    self.state.trust += gain;
+                    self.state.daily_trust += gain;
+                }
             }
-            "talk" => {}
+            "talk" => {
+                // Hablar ahora da un poco de afecto/confianza pero muy poco
+                if self.state.daily_affection < 10 {
+                    self.state.affection += 1;
+                    self.state.daily_affection += 1;
+                }
+            }
             _ => {}
         }
 
@@ -100,13 +124,8 @@ impl Engine {
         self.state.actions_taken += 1;
         self.state.last_dialogue = self.get_random_dialogue(Some(action));
 
-        // Cada acción consume tiempo
-        let minutes = match action {
-            "talk" => 15,
-            "give_treat" => 10,
-            "pat_head" => 5,
-            _ => 30,
-        };
+        // Cada acción consume tiempo equilibrado (2 horas)
+        let minutes = 120; 
         
         self.advance_time(minutes);
 
@@ -123,6 +142,11 @@ impl Engine {
         while self.state.hour >= 24 {
             self.state.hour -= 24;
             self.state.day += 1;
+            
+            // Nuevo día: Resetear límites y empezar a las 8:00
+            self.state.daily_affection = 0;
+            self.state.daily_trust = 0;
+            self.state.hour = 8;
         }
 
         self.update_time_of_day();
@@ -205,8 +229,8 @@ mod tests {
     #[test]
     fn test_time_progression() {
         let mut state = GameState::default();
-        state.hour = 23;
-        state.minute = 45;
+        state.hour = 22;
+        state.minute = 0;
         state.day = 1;
 
         let mut engine = Engine {
@@ -215,14 +239,30 @@ mod tests {
             save_path: PathBuf::from("test_save.json"),
         };
 
-        engine.advance_time(15);
+        // Una acción toma 2 horas (120 min). 22:00 + 2h = 00:00 del día siguiente (8:00 por reset)
+        engine.interact("talk");
         assert_eq!(engine.state.day, 2);
-        assert_eq!(engine.state.hour, 0);
+        assert_eq!(engine.state.hour, 8);
         assert_eq!(engine.state.minute, 0);
+    }
 
-        engine.advance_time(70);
-        assert_eq!(engine.state.hour, 1);
-        assert_eq!(engine.state.minute, 10);
+    #[test]
+    fn test_daily_limits() {
+        let mut engine = Engine {
+            state: GameState::default(),
+            dialogues: serde_json::Value::Null,
+            save_path: PathBuf::from("test_save_limits.json"),
+        };
+
+        // Realizamos acciones hasta llegar a la noche sin cambiar de día todavía
+        // 8:00, 10:00, 12:00, 14:00, 16:00, 18:00 (6 acciones)
+        for _ in 0..6 {
+            engine.interact("pat_head");
+        }
+        assert_eq!(engine.state.daily_affection, 10); // 6 * 2 = 12, pero el límite es 10
+        assert_eq!(engine.state.affection, 10);
+        assert_eq!(engine.state.daily_trust, 5); // 6 * 1 = 6, pero el límite es 5
+        assert_eq!(engine.state.hour, 20);
     }
 
     #[test]
