@@ -42,7 +42,7 @@ where
                         let i = match menu_state.selected() {
                             Some(i) => {
                                 if i == 0 {
-                                    4
+                                    5
                                 } else {
                                     i - 1
                                 }
@@ -54,7 +54,7 @@ where
                     KeyCode::Down => {
                         let i = match menu_state.selected() {
                             Some(i) => {
-                                if i >= 4 {
+                                if i >= 5 {
                                     0
                                 } else {
                                     i + 1
@@ -82,7 +82,16 @@ where
                                 Some(3) => {
                                     engine.state.last_dialogue = "Concepto Original: Ray-K\nLógica y TUI: staFF6773 (Rust Port)\nVersión: 1.1.0 (Rust)".to_string();
                                 },
-                                Some(4) => return Ok(()),
+                                Some(4) => {
+                                    engine.state.last_dialogue = "Buscando actualizaciones...".to_string();
+                                    visible_chars = 0;
+                                    terminal.draw(|f| ui(f, &engine, &mut menu_state, visible_chars, &mut image_state))?;
+                                    match crate::update::check_version() {
+                                        Ok(msg) => engine.state.last_dialogue = msg,
+                                        Err(e) => engine.state.last_dialogue = format!("Error al comprobar versión: {}", e),
+                                    }
+                                }
+                                Some(5) => return Ok(()),
                                 _ => {}
                             }
                             visible_chars = 0;
@@ -92,7 +101,7 @@ where
                 }
             }
         }
- else {
+        else {
             let dialogue_len = engine.state.last_dialogue.chars().count();
             if visible_chars < dialogue_len {
                 visible_chars += 1;
@@ -105,7 +114,7 @@ fn ui(f: &mut ratatui::Frame, engine: &Engine, menu_state: &mut ListState, visib
     let chunks = Layout::vertical([
         Constraint::Length(3), // Status bar
         Constraint::Min(10),   // Main area
-        Constraint::Length(7), // Menu/Input
+        Constraint::Length(8), // Menu/Input (increased length)
     ])
     .split(f.area());
 
@@ -159,7 +168,8 @@ fn ui(f: &mut ratatui::Frame, engine: &Engine, menu_state: &mut ListState, visib
         ListItem::new("2) Hablar"),
         ListItem::new("3) Dar dulce"),
         ListItem::new("4) Créditos"),
-        ListItem::new("5) Salir"),
+        ListItem::new("5) Comprobar versión"),
+        ListItem::new("6) Salir"),
     ];
     let menu = List::new(items)
         .block(Block::default().borders(Borders::ALL).title(" Acciones ").border_style(Style::default().fg(Color::Gray)))
